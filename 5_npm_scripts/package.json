@@ -1,0 +1,21 @@
+{
+  "name": "4_bultin_and_npm_modules",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "dependencies": {
+  },
+  "devDependencies": {
+  },
+  "scripts": {
+    "start": "node app",
+    "dev": "node app",
+    "pretest": "echo starting test!!!",
+    "test": "node test",
+    "posttest": "echo test is done!",
+    "test-watch": "nodemon test"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
