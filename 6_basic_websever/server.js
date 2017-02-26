@@ -1,5 +1,5 @@
-const http = require('http');
-const handlers = require('./handlers');
+import http from 'http';
+import { homepage, profile, notFound } from './handlers';
 
 const server = http.createServer((req, res) => {
 	// const headers = req.headers;
@@ -10,12 +10,12 @@ const server = http.createServer((req, res) => {
 	// console.log(url);
 
 	if (url === '/') {
-		handlers.homepage(req, res);
+		homepage(req, res);
 	} else if (url === '/profile') {
-		handlers.profile(req, res);
+		profile(req, res);
 	} else {
-		handlers.notFound(req, res);
+		notFound(req, res);
 	}
 });
 
-server.listen(3000);
+server.listen(3006);
