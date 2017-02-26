@@ -2,7 +2,7 @@
   "name": "6_basic_websever",
   "version": "1.0.0",
   "description": "",
-  "main": "handlers.js",
+  "main": "main.js",
   "scripts": {
     "dev": "nodemon main",
     "test": "echo \"Error: no test specified\" && exit 1",
