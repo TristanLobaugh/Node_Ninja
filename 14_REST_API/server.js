@@ -22,24 +22,18 @@ const app = express();
 
 app
 	.use(bodyParser.json())
-	.get('/tweets', (req, res) => {
-		db('tweets').then(tweets => {
-			res.send(tweets);
-		})
-		// include catches for error handling
-		.catch(err => {
-			console.log(err);
-			res.send(err);
-		});
-	})
-	.get('/users', (req, res) => {
+	.get('/users', (req, res, next) => {
 		db('users').then(users => {
 			res.send(users);
-		})
-		.catch(err => {
-			console.log(err);
-			res.send(err);
-		});
+		}, next);
 	})
-	.listen(3013)
+	.get('/users/:id', (req, res, next) => {
+		const { id } = req.params;
+		db('users')
+		.where('id', id)
+		.then(users => {
+			res.send(users);
+		}, next);
+	})
+	.listen(3014)
 ;
