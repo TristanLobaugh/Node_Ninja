@@ -7,7 +7,7 @@ const db = knex({
 	connection: {
 		host: '127.0.0.1',
 		user: 'root',
-		password: 'mypassword',
+		password: 'myPassword',
 		database: 'test'
 	}
 });
@@ -31,8 +31,43 @@ app
 		const { id } = req.params;
 		db('users')
 		.where('id', id)
+		.first()
 		.then(users => {
+			if (!users) {
+				return res.sendStatus(400);
+			}
 			res.send(users);
+		}, next);
+	})
+	.post('/users', (req, res, next) => {
+		db('users')
+		.insert(req.body)
+		.then(userIds => {
+			res.send(userIds);
+		}, next);
+	})
+	.put('/users/:id', (req, res, next) => {
+		const { id } = req.params;
+		db('users')
+		.where('id', id)
+		.update(req.body)
+		.then(result => {
+			if (result === 0) {
+				return res.sendStatus(400);
+			}
+			res.sendStatus(200);
+		}, next);
+	})
+	.delete('/users/:id', (req, res, next) => {
+		const { id } = req.params;
+		db('users')
+		.where('id', id)
+		.delete()
+		.then(result => {
+			if (result === 0) {
+				return res.sendStatus(400);
+			}
+			res.sendStatus(200);
 		}, next);
 	})
 	.listen(3014)
