@@ -1,5 +1,6 @@
 import passport from 'passport';
 import LocalStrategy from 'passport-local';
+import GitHubStrategy from 'passport-github';
 import bcrypt from 'bcrypt-nodejs';
 import { db } from './db';
 // const LocalStrategy = require('passport-local').Strategy;
@@ -44,6 +45,32 @@ function register(req, email, password, done) {
 
 passport.use(new LocalStrategy(authenticate));
 passport.use('local-register', new LocalStrategy({ passReqToCallback: true }, register));
+passport.use(new GitHubStrategy({
+	clientID: 'github_id',
+	clientSecret: 'github_secret',
+	callbackURL: 'http://localhost:3021/auth/github/callback'
+}, (accessToken, refreshToken, profile, done) => {
+	db('users')
+		.where('oauth_provider', 'github')
+		.where('oauth_id', profile.username)
+		.first()
+		.then(user => {
+			if (user) {
+				return done(null, user);
+			}
+			const newUser = {
+				oauth_provider: 'github',
+				oauth_id: profile.username,
+			};
+			return db('users')
+			.insert(newUser)
+			.then(ids => {
+				newUser.id = ids[0];
+				done(null, newUser);
+			});
+		});
+}
+));
 
 passport.serializeUser((user, done) => {
 	done(null, user.id);
