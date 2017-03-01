@@ -5,7 +5,7 @@ export const db = knex({
 	connection: {
 		host: '127.0.0.1',
 		user: 'root',
-		password: 'mypassword',
+		password: 'myPassword',
 		database: 'test17_authenticate'
 	}
 });

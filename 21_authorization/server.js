@@ -6,6 +6,9 @@ import authRoutes from './routes/auth';
 import postsRoutes from './routes/posts';
 import { db } from './db';
 
+// need to start with redis-server
+const RedisStore = require('connect-redis')(session);
+
 require('./passport');
 
 const app = express();
@@ -14,7 +17,12 @@ app
 	.set('view engine', 'hjs')
 	.use(bodyParser.json())
 	.use(bodyParser.urlencoded({ extended: false }))
-	.use(session({ secret: 'Chewie is the best dog', resave: false, saveUninitialized: false }))
+	.use(session({
+		store: new RedisStore(),
+		secret: 'Chewie is the best dog',
+		resave: false,
+		saveUninitialized: false
+	}))
 	.use(passport.initialize())
 	.use(passport.session())
 	.use(authRoutes)

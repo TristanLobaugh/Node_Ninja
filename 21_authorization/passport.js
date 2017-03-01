@@ -46,8 +46,9 @@ function register(req, email, password, done) {
 passport.use(new LocalStrategy(authenticate));
 passport.use('local-register', new LocalStrategy({ passReqToCallback: true }, register));
 passport.use(new GitHubStrategy({
-	clientID: 'github_id',
-	clientSecret: 'github_secret',
+	// Need to protect these keys
+	clientID: '',
+	clientSecret: '',
 	callbackURL: 'http://localhost:3021/auth/github/callback'
 }, (accessToken, refreshToken, profile, done) => {
 	db('users')
