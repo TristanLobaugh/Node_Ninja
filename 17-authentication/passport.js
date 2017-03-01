@@ -16,7 +16,34 @@ function authenticate(email, password, done) {
 	}, done);
 }
 
+function register(req, email, password, done) {
+	db('users')
+	.where('email', email)
+	.first()
+	.then(user => {
+		if (user) {
+			return done(null, false, { message: `Sorry, username "${email}" already exists` });
+		}
+		if (password !== req.body.password2) {
+			return done(null, false, { message: 'Sorry, passwords don\'t match' });
+		}
+		const newUser = {
+			first_name: req.body.first_name,
+			last_name: req.body.last_name,
+			email,
+			password: bcrypt.hashSync(password)
+		};
+		db('users')
+		.insert(newUser)
+		.then(ids => {
+			newUser.id = ids[0];
+			done(null, newUser);
+		});
+	});
+}
+
 passport.use(new LocalStrategy(authenticate));
+passport.use('local-register', new LocalStrategy({ passReqToCallback: true }, register));
 
 passport.serializeUser((user, done) => {
 	done(null, user.id);
