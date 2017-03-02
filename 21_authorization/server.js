@@ -4,6 +4,7 @@ import session from 'express-session';
 import passport from 'passport';
 import authRoutes from './routes/auth';
 import postsRoutes from './routes/posts';
+import cache from './cache';
 import { db } from './db';
 
 // need to start with redis-server
@@ -27,11 +28,19 @@ app
 	.use(passport.session())
 	.use(authRoutes)
 	.use(postsRoutes)
-	.get('/', (req, res, next) => {
-		res.send({
-			session: req.session,
-			user: req.user,
-			authenticated: req.isAuthenticated()
-		});
+	.get('/', cache.route({ expire: 5, prefix: 'home' }), (req, res, next) => {
+		setTimeout(() => {
+			const headlines = [
+				'Red is the new black',
+				'Chewie is great!',
+				'How cool is this'
+			];
+			res.render('headlines', { headlines });
+			// res.send({
+			// 	session: req.session,
+			// 	user: req.user,
+			// 	authenticated: req.isAuthenticated()
+			// });
+		}, 3000);
 	})
 	.listen(3021);
